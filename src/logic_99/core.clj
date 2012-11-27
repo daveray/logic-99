@@ -175,6 +175,46 @@
 ; .
 ; .
 
+; P14
+; Duplicate the elements of a list
+(defn duplicate2o
+  [in out]
+  (matche [in]
+    ([[]] (== out []))
+    ([[?head . ?tail]]
+     (fresh [duped-tail]
+       (duplicate2o ?tail duped-tail)
+       (appendo [?head ?head] duped-tail out)))))
+
+; P15
+; Duplicate the elements of a list n times each
+(defn duplicateo
+  [n in out]
+  (matche [in]
+    ([[]] (== out []))
+    ([[?head . ?tail]]
+     (fresh [duped-tail]
+       (duplicateo n ?tail duped-tail)
+       (appendo (repeat n ?head) duped-tail out)))))
+
+; .
+; .
+; .
+
+; P22
+; List of integers within a range
+(defn rangeo [start end list]
+  (conde
+    [(== start end) (== list [])]
+    [(!= start end) (fresh [s+1 tail]
+                      (successoro start s+1)
+                      (rangeo s+1 end tail)
+                      (conso start tail list))]))
+
+; .
+; .
+; .
+
 ; P54
 ; Determine if a tree is binary
 (defn is-treeo

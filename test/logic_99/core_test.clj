@@ -1,7 +1,7 @@
 (ns logic-99.core-test
   (:use logic-99.core)
   (:require [clojure.test :refer [deftest testing is]]
-            [clojure.core.logic :refer [run* run]]))
+            [clojure.core.logic :refer [run* run fresh]]))
 
 (deftest test-listo
   (is (empty? (run* [q] (listo 'x))))
@@ -105,6 +105,34 @@
     (is (= '[[[2 a] [1 b] [2 c ] [2 a] [1 d] [4 e]]]
            (run* [q] (encodeo '[a a b c c a a d e e e e] q))))))
 
+(deftest test-rangeo
+  (testing "generates an empty list for empty range"
+    (is (= [[]] (run* [q] (rangeo 2 2 q)))))
+  (testing "generates a singleton list for singleton range"
+    (is (= [[3]] (run* [q] (rangeo 3 4 q)))))
+  (testing "generates a list for a range"
+    (is (= [(range 2 7)] (run* [q] (rangeo 2 7 q)))))
+  ; TODO doesn't run in reverse
+  (comment (testing "is relational"
+    (is (= [[2 7]] (run* [q] (fresh [s e]
+                               (rangeo s e (range 2 6))
+                               (== q [s e]))))))))
+
+(deftest test-duplicate2o
+  (testing "generates an empty list for empty input"
+    (is (= [[]] (run* [q] (duplicate2o [] q)))))
+  (testing "duplicates elemens in input"
+    (is (= [[2 2]] (run* [q] (duplicate2o [2] q)))))
+  (testing "duplicates elemens in input"
+    (is (= [[3 3 2 2]] (run* [q] (duplicate2o [3 2] q))))))
+
+(deftest test-duplicateo
+  (testing "generates an empty list for empty input"
+    (is (= [[]] (run* [q] (duplicateo 5 [] q)))))
+  (testing "duplicates elements in input"
+    (is (= [[2 2 2]] (run* [q] (duplicateo 3 [2] q)))))
+  (testing "duplicates elemens in input"
+    (is (= [[3 3 3 3 2 2 2 2]] (run* [q] (duplicateo 4 [3 2] q))))))
 
 (deftest test-is-treeo
   (testing "nil is a tree"
@@ -113,3 +141,4 @@
     (is (not (empty? (run* [q] (is-treeo '[a [b nil nil] nil]))))))
   (testing "rejects a non-binary tree"
     (is (empty? (run* [q] (is-treeo '[a [b nil nil]]))))))
+
